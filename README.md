@@ -1,9 +1,22 @@
 # Wolai Alfred 搜索插件
 
+## 写在前面
 1. 因个人能力有限,搞JAVA的,不熟悉Python和Alfred,此版本目前只支持网页版本,不支持客户端版本,后续可能会支持,并维护添加新功能
 2. wolai的history似乎是本地缓存的查询,不涉及到HTTP请求,所以浏览历史暂时也没想到咋整
 3. 如有问题,请GitHub提交issue(请勿提交百度上就能找到的问题,浪费大家时间,当然给钱的话另说,咨询一次20块),
 4. 因为本人非Python使用者,写的很简单,也可能在大佬看来也很烂,欢迎大佬搞PR,甚至可以在issue上提交自己写的,我也会贴到README里面,给你引流
+
+## 更新日志
+1. 版本 : 0.0.2
+2. 更新内容 : 
+   
+   1. 针对 [Issue1](https://github.com/jeasion/wolai-alfred/issues/1) 提议的优化 
+   
+      - 去除图标的bug
+      - 使用page_id而不是id作为链接地址
+      - 对同一页面的进行了去重,避免页面重复出现
+   2. 因MacOS已经移除python2,替换使用了python3, 如发现无法运行,请将下图中的"python3" 替换为 "python"
+        ![img_6.png](./img/img_6.png)
 
 ## 系统变量
 - wolaiSpaceId
