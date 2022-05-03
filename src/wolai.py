@@ -67,31 +67,29 @@ def getWolaiurl():
 
 searchResultList = []
 if alfredQuery and alfredQuery.strip():
-    headers = {"Content-type": "application/json", "Cookie": cookie, "jeasion": "test"}
-    conn = http.client.HTTPSConnection("api.wolai.com")
-    conn.request("POST", "/v1/search/advancedSearch", buildWolaiSearchData(), headers)
-    response = conn.getresponse()
-    buff = BytesIO(response.read())
-    data = gzip.GzipFile(fileobj=buff).read().decode("utf-8")
-
-    dataStr = json.dumps(data).replace("<em>", "").replace("</em>", "")
-    data = json.loads(dataStr)
-    conn.close()
-
-    searchResults = Payload(data)
     try:
+        headers = {"Content-type": "application/json", "Cookie": cookie, "jeasion": "test"}
+        conn = http.client.HTTPSConnection("api.wolai.com")
+        conn.request("POST", "/v1/search/advancedSearch", buildWolaiSearchData(), headers)
+        response = conn.getresponse()
+        buff = BytesIO(response.read())
+        data = gzip.GzipFile(fileobj=buff).read().decode("utf-8")
+
+        dataStr = json.dumps(data).replace("<em>", "").replace("</em>", "")
+        data = json.loads(dataStr)
+        conn.close()
+
+        searchResults = Payload(data)
         result = searchResults.data.get('result').get("items")
         for x in result:
-            clientLink = getWolaiurl() + x.get("id")
-            link = getWolaiurl() + x.get("id")
-            x["clientLink"] = clientLink
-            x["webLink"] = url + x.get("id")
+            link = getWolaiurl() + x.get("page_id")
             x["link"] = link
             searchResultList.append(x)
     except:
         pass
 
-map = {}
+
+dictMap = {}
 for searchResultObject in searchResultList:
     item = {
         "type": searchResultObject.get("type"),
@@ -100,21 +98,23 @@ for searchResultObject in searchResultList:
         "subtitle": ""
     }
     key = searchResultObject.get("link")
-    if key not in map:
-        map[key] = item
+    if key not in dictMap:
+        dictMap[key] = item
 
-items = {}
-if not map:
+
+if not dictMap:
     item = {
         "uid": 1,
         "type": "default",
         "title": "Open Wolai - No results, empty query, or error",
         "arg": getWolaiurl()
     }
-    map["empty"] = item
-items_json = json.dumps(list(map.values()))
+    dictMap["empty"] = item
+jsonStr = {"items": list(dictMap.values())}
+items_json = json.dumps(jsonStr)
 
 if debug:
+    print("结果")
     print(items_json)
 else:
     sys.stdout.write(items_json)
