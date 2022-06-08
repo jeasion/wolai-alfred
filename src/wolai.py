@@ -61,10 +61,10 @@ if alfredQuery and alfredQuery.strip():
 
     searchResults = Payload(data)
     try:
-        result = searchResults.data.get('result').get("items");
+        result = searchResults.data.get('result').get("items")
         for x in result:
-            clientLink = getWolaiurl() + x.get("id");
-            link = getWolaiurl() + x.get("id");
+            clientLink = getWolaiurl() + x.get("id")
+            link = getWolaiurl() + x.get("id")
             x["clientLink"] = clientLink
             x["webLink"] = url + x.get("id")
             x["link"] = link
