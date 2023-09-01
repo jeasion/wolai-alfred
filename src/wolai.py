@@ -53,7 +53,6 @@ def buildWolaiSearchData():
         "active": "1",
         "pageId": ""
     }
-
     jsonData = json.dumps(query)
     return jsonData
 
@@ -62,7 +61,7 @@ def getWolaiurl():
     if useDesktopClient:
         return clientUrl + userName + "/"
     else:
-        return url + userName + "/"
+        return url
 
 
 searchResultList = []
@@ -74,7 +73,6 @@ if alfredQuery and alfredQuery.strip():
         response = conn.getresponse()
         buff = BytesIO(response.read())
         data = gzip.GzipFile(fileobj=buff).read().decode("utf-8")
-
         dataStr = json.dumps(data).replace("<em>", "").replace("</em>", "")
         data = json.loads(dataStr)
         conn.close()
@@ -83,24 +81,30 @@ if alfredQuery and alfredQuery.strip():
         result = searchResults.data.get('result').get("items")
         for x in result:
             link = getWolaiurl() + x.get("page_id")
-            x["link"] = link
+            x["link"] = link + "#" + x.get("id")
             searchResultList.append(x)
     except:
         pass
 
-
 dictMap = {}
 for searchResultObject in searchResultList:
+    type = searchResultObject.get("type")
+    title = searchResultObject.get("title")
+    if type == "page":
+        title = "页面标题 -> " + title
+    elif type == "subHeader":
+        title = "页内标题 -> " + title
+    else:
+        title = "内容 -> " + title
     item = {
-        "type": searchResultObject.get("type"),
-        "title": searchResultObject.get("title"),
+        "type": type,
+        "title": title,
         "arg": searchResultObject.get("link"),
-        "subtitle": ""
+        "subtitle": searchResultObject.get("text_content")
     }
     key = searchResultObject.get("link")
     if key not in dictMap:
         dictMap[key] = item
-
 
 if not dictMap:
     item = {
